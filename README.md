@@ -4,6 +4,10 @@ OpoWatch is a public sector job posting monitor. It watches multiple official so
 
 Built as a learning project to practice web scraping, REST APIs, and microservices with Spring Boot and Angular.
 
+## Demo
+
+📹 [Watch the demo video](https://github.com/igarciamen/Opowatch/blob/main/OPOWATCH%20(Web%20Scraping)/opowatch.mp4)
+
 ## Architecture
 
 Four independent Spring Boot microservices, no API gateway, communicating over plain REST with a shared JWT secret:
