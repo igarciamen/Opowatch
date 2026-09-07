@@ -1,0 +1,50 @@
+<div class="container mt-4" style="max-width: 600px">
+  <h2 class="mb-4">My profile</h2>
+
+  @if (loading) {
+  <p>Loading...</p>
+  } @else if (user) {
+
+  <div class="mb-3">
+    <label class="form-label text-muted">Username</label>
+    <p class="fw-bold">{{ user.username }}</p>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label text-muted">Email</label>
+    <p class="fw-bold">{{ user.email }}</p>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label text-muted">Roles</label>
+    <p>
+      @for (role of user.roles; track role) {
+      <span class="badge bg-secondary me-1">{{ role }}</span>
+      }
+    </p>
+  </div>
+
+  <div class="form-check form-switch mb-3">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      role="switch"
+      id="notificationsSwitch"
+      [checked]="user.subscribedToNotifications"
+      [disabled]="saving"
+      (change)="toggleNotifications()"
+    />
+    <label class="form-check-label" for="notificationsSwitch">
+      Receive email notifications for new IT public job postings
+    </label>
+  </div>
+
+  @if (successMessage) {
+  <div class="alert alert-success">{{ successMessage }}</div>
+  }
+  @if (errorMessage) {
+  <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+
+  }
+</div>

@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Watchers</h2>
+    <a routerLink="/admin/watchers/new" class="btn btn-primary">New watcher</a>
+  </div>
+
+  @if (errorMessage) {
+  <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+  <p>Loading...</p>
+  } @else if (watchers.length === 0) {
+  <p class="text-muted">No watchers configured yet.</p>
+  } @else {
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Source</th>
+        <th>Interval</th>
+        <th>Active</th>
+        <th>Last run</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (watcher of watchers; track watcher.id) {
+      <tr>
+        <td>{{ watcher.name }}</td>
+        <td>
+          <span class="badge" [ngClass]="watcher.sourceType === 'BOE_API' ? 'bg-info' : 'bg-secondary'">
+            {{ watcher.sourceType }}
+          </span>
+        </td>
+        <td>{{ watcher.scrapeIntervalMinutes }} min</td>
+        <td>
+          @if (watcher.active) {
+          <span class="badge bg-success">Active</span>
+          } @else {
+          <span class="badge bg-secondary">Paused</span>
+          }
+        </td>
+        <td>
+          @if (watcher.lastScrapedAt) {
+          {{ watcher.lastScrapedAt | date:'short' }}
+          } @else {
+          <span class="text-muted">Never</span>
+          }
+        </td>
+        <td class="text-end">
+          <div class="d-flex gap-2 justify-content-end align-items-center">
+            @if (scrapeMessages[watcher.id]) {
+            <small class="text-muted">{{ scrapeMessages[watcher.id] }}</small>
+            }
+            <button class="btn btn-sm btn-outline-primary" (click)="scrapeNow(watcher)" [disabled]="scrapingId === watcher.id">
+              @if (scrapingId === watcher.id) { Scraping... } @else { Scrape now }
+            </button>
+            <a class="btn btn-sm btn-outline-secondary" [routerLink]="['/admin/watchers', watcher.id, 'edit']">Edit</a>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteWatcher(watcher)">Delete</button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
+</div>

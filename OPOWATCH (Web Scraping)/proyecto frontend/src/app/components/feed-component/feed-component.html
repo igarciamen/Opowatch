@@ -1,0 +1,94 @@
+<div class="container mt-4" style="max-width: 900px">
+  <div class="text-center mb-4">
+    <h1>OpoWatch</h1>
+    <p class="text-muted">Latest public job postings, detected automatically</p>
+  </div>
+
+
+  <div class="row g-2 mb-2">
+    <div class="col-md-5">
+      <input
+        type="text"
+        class="form-control form-control-lg"
+        placeholder="Search by title, organization or watcher..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onFilterChange()"
+      />
+    </div>
+    <div class="col-md-3">
+      <select class="form-select form-select-lg" [(ngModel)]="selectedMonth" (ngModelChange)="onFilterChange()">
+        <option value="">All months</option>
+        @for (month of monthOptions; track month.key) {
+        <option [value]="month.key">{{ month.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-md-4">
+      <select class="form-select form-select-lg" [(ngModel)]="selectedWatcher" (ngModelChange)="onFilterChange()">
+        <option value="">All watchers</option>
+        @for (watcher of watcherOptions; track watcher) {
+        <option [value]="watcher">{{ watcher }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (hasActiveFilters) {
+  <div class="mb-4">
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="clearFilters()">
+      Clear filters
+    </button>
+  </div>
+  } @else {
+  <div class="mb-4"></div>
+  }
+
+  @if (errorMessage) {
+  <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+  <div class="feed-list">
+    @for (placeholder of skeletonPlaceholders; track placeholder) {
+    <article class="feed-item feed-item--skeleton">
+      <div class="skeleton-line skeleton-line--badge"></div>
+      <div class="skeleton-line skeleton-line--title"></div>
+      <div class="skeleton-line skeleton-line--org"></div>
+      <div class="skeleton-line skeleton-line--date"></div>
+    </article>
+    }
+  </div>
+  } @else if (filteredItems.length === 0) {
+  <p class="text-center text-muted">
+    @if (hasActiveFilters) {
+    No postings match your filters.
+    } @else {
+    No postings detected yet. Check back soon.
+    }
+  </p>
+  } @else {
+  <p class="text-muted small">{{ filteredItems.length }} posting(s) found</p>
+  <div class="feed-list">
+    @for (item of filteredItems; track item.id) {
+    <article class="feed-item">
+      <div class="feed-item__header">
+        <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">{{ item.watcherName }}</span>
+        @if (isNew(item.detectedAt)) {
+        <span class="badge rounded-pill bg-success-subtle text-success-emphasis">New</span>
+        }
+        @if (item.publicationDate) {
+        <span class="feed-item__date">{{ item.publicationDate }}</span>
+        }
+      </div>
+      <h2 class="feed-item__title">
+        <a [href]="item.sourceUrl" target="_blank" rel="noopener" [innerHTML]="highlightedTitle(item.title)"></a>
+      </h2>
+      @if (item.organization) {
+      <p class="feed-item__org">{{ item.organization }}</p>
+      }
+      <p class="feed-item__detected">Detected {{ item.detectedAt | date:'short' }}</p>
+    </article>
+    }
+  </div>
+  }
+</div>
