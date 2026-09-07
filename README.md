@@ -6,7 +6,11 @@ Built as a learning project to practice web scraping, REST APIs, and microservic
 
 ## Demo
 
-📹 [Watch the demo video](https://github.com/igarciamen/Opowatch/blob/main/OPOWATCH%20(Web%20Scraping)/opowatch.mp4)
+
+
+https://github.com/user-attachments/assets/a8745016-11dd-48fb-a23d-055b86b63279
+
+
 
 ## Architecture
 
