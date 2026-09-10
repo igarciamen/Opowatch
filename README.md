@@ -1,16 +1,12 @@
 # OpoWatch
 
-OpoWatch is a public sector job posting monitor. It watches multiple official sources (the Spanish State Gazette, town hall and provincial council websites, open data APIs), filters postings by keyword, detects new and updated postings, and notifies subscribed users by email. A public feed lets anyone browse and search detected postings without logging in.
+OpoWatch is a public sector job posting monitor. It watches multiple official sources (the Spanish BOE, town hall and provincial council websites, open data APIs), filters postings by keyword, detects new and updated postings, and notifies subscribed users by email. A public feed lets anyone browse and search detected postings without logging in.
 
 Built as a learning project to practice web scraping, REST APIs, and microservices with Spring Boot and Angular.
 
 ## Demo
 
-
-
 https://github.com/user-attachments/assets/a8745016-11dd-48fb-a23d-055b86b63279
-
-
 
 ## Architecture
 
@@ -56,9 +52,9 @@ A watcher's `keywords` field (comma-separated) is fully configurable per watcher
 
 Every scrape run computes a SHA-256 hash of each matched posting (title + organization + date):
 
-- **New URL** → saved as a new item.
-- **Known URL, different hash** → the record is updated and counted as "updated".
-- **Known URL, same hash** → nothing happens.
+- **New URL** : saved as a new item.
+- **Known URL, different hash** : the record is updated and counted as "updated".
+- **Known URL, same hash** : nothing happens.
 
 Both the manual "Scrape now" action and the automatic scheduler (checks every minute which watchers are due, based on each watcher's own interval) report `newItemsFound` and `updatedItemsFound` separately, and both trigger email notifications to subscribers.
 
@@ -107,9 +103,4 @@ Full interactive documentation is available on each service's Swagger UI at `/sw
 
 An initial `ROLE_ADMIN` user is seeded automatically on first startup of `users` via a `DataLoader`.
 
-## Design notes and limitations worth knowing
 
-- **Sources are only added after checking `robots.txt`.** Several promising sources (Boletín Oficial de Aragón, Diputación de Zaragoza, the state's internal employment search tool) were deliberately left out because their `robots.txt` disallows automated access, even where an official open dataset existed under a different, blocked hosting path.
-- **Deduplication is per source URL, not per content.** Sources where the same URL always shows different content (e.g. a live clock) are not a good fit for a `SELENIUM` watcher as designed; they would need a value-based (not URL-based) change detection strategy.
-- **BOE deep PDF check has a per-run cap** (`watchers.deep-check-max-per-run`) to avoid downloading too many PDFs in a single scheduled run.
-- **`RSS_FEED` was considered but not implemented** — none of the sources investigated (Huesca, Teruel, their provincial councils, EU Careers) were confirmed to expose a dedicated employment RSS feed. Left as a documented idea for a future source that does.
